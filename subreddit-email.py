@@ -1,5 +1,10 @@
 import praw
 from jinja2 import Environment, PackageLoader
+import yagmail
+import configparser
+
+Config = configparser.ConfigParser()
+Config.read("./config.ini")
 
 class RedditScraper(object):
 	def __init__(self, redditObj, fav_subs):
@@ -23,11 +28,22 @@ class EmailSubmissions(object):
 	def __init__(self, data, email):
 		self.data = data
 		self.email = email
-	def render():
+	def render(self):
 		""" Renders a jinja2 html template, so it can be emailed to the user """
+		env = Environment(loader=PackageLoader('subreddit-email', 'templates'))
+		template = env.get_template('email.html')
+		return template.render(my_string="Wheeeee!", my_list=[0,1,2,3,4,5])
+	def send_email(self):
+		template = self.render()
+		yagmail.register(Config.get('Gmail', 'Username'), Config.get('Gmail', 'Password'))
+		print(yagmail)
+		yag = yagmail.SMTP(Config.get('Gmail', 'Username'))
+		yag.send(self.email, 'Subreddit Info', template)
+
 
 r = praw.Reddit(user_agent='subreddit-email')
 fav_subs = ['python', 'javascript', 'cscareerquestions', 'node']
-
 reddit = RedditScraper(r, fav_subs)
-print(reddit.create_object())
+
+email = EmailSubmissions({}, "aarshpatel@umass.edu")
+email.send_email()
