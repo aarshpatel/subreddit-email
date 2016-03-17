@@ -1,26 +1,15 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Flask Template Example</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <style type="text/css">
-      .container {
-        max-width: 500px;
-        padding-top: 100px;
-      }
-    </style>
-  </head>
   <body>
-    <div>
-      <p>My string: {{my_string}}</p>
-      <p>Value from the list: {{my_list[3]}}</p>
-      <p>Loop through the list:</p>
-      <ul>
-        {% for n in my_list %}
-        <li>{{n}}</li>
+        {% for key, value in submissions.items() %}
+            <div>
+                <h3> {{ key }} </h3>
+                <ul>
+                    {% for s in value %}
+                    <li><a href="{{s[1]}}">{{s[0]}}</a> Upvotes: {{s[2]}}</li>
+                    {% endfor %}
+              </ul>
+            </div>
         {% endfor %}
-      </ul>
-    </div>
   </body>
 </html>

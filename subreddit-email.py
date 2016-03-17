@@ -21,7 +21,7 @@ class RedditScraper(object):
 		return r.get_subreddit(name).get_top(limit=limit)
 	def extract_data(self, sub):
 		""" Given a submission, this method returns the title, url, and some comments associated with that submission """
-		return (sub.title, sub.url)  # need to figure out a way to process comments
+		return (sub.title, sub.url, sub.score)  # need to figure out a way to process comments
 
 
 class EmailSubmissions(object):
@@ -32,18 +32,16 @@ class EmailSubmissions(object):
 		""" Renders a jinja2 html template, so it can be emailed to the user """
 		env = Environment(loader=PackageLoader('subreddit-email', 'templates'))
 		template = env.get_template('email.html')
-		return template.render(my_string="Wheeeee!", my_list=[0,1,2,3,4,5])
+		return template.render(submissions=self.data)
 	def send_email(self):
 		template = self.render()
 		yagmail.register(Config.get('Gmail', 'Username'), Config.get('Gmail', 'Password'))
-		print(yagmail)
 		yag = yagmail.SMTP(Config.get('Gmail', 'Username'))
 		yag.send(self.email, 'Subreddit Info', template)
 
-
 r = praw.Reddit(user_agent='subreddit-email')
-fav_subs = ['python', 'javascript', 'cscareerquestions', 'node']
+fav_subs = ['javascript', 'node', 'python', 'cscareerquestions']
 reddit = RedditScraper(r, fav_subs)
-
-email = EmailSubmissions({}, "aarshpatel@umass.edu")
+data = reddit.create_object()
+email = EmailSubmissions(data, "aarshpatel@umass.edu")
 email.send_email()
