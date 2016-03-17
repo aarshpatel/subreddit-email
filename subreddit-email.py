@@ -43,5 +43,5 @@ r = praw.Reddit(user_agent='subreddit-email')
 fav_subs = ['javascript', 'node', 'python', 'cscareerquestions']
 reddit = RedditScraper(r, fav_subs)
 data = reddit.create_object()
-email = EmailSubmissions(data, "aarshpatel@umass.edu")
+email = EmailSubmissions(data, "youremail.com")
 email.send_email()
