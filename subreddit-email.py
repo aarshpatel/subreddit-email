@@ -7,8 +7,8 @@ Config = configparser.ConfigParser()
 Config.read("./config.ini")
 
 class RedditScraper(object):
-	def __init__(self, redditObj, fav_subs):
-		self.r = redditObj
+	def __init__(self, reddit_obj, fav_subs):
+		self.r = reddit_obj
 		self.fav_subs = fav_subs
 	def create_object(self):
 		data = {}
@@ -34,7 +34,7 @@ class EmailSubmissions(object):
 		template = env.get_template('email.html')
 		return template.render(submissions=self.data)
 	def send_email(self):
-		template = self.render()
+		self.render()
 		yagmail.register(Config.get('Gmail', 'Username'), Config.get('Gmail', 'Password'))
 		yag = yagmail.SMTP(Config.get('Gmail', 'Username'))
 		yag.send(self.email, 'Subreddit Info', template)
